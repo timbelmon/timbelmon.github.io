@@ -1,7 +1,196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timbelmon's Project Log</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico">
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #b0b0b0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
+        .glitch {
+            font-size: 4rem;
+            position: relative;
+            display: inline-block;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            animation: glitch-animation 1.5s infinite linear alternate-reverse;
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 red;
+            animation-delay: 0.2s;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 blue;
+        }
+        @keyframes glitch-animation {
+            0% {
+                clip: rect(10px, 9999px, 40px, 0);
+            }
+            25% {
+                clip: rect(85px, 9999px, 100px, 0);
+            }
+            50% {
+                clip: rect(20px, 9999px, 60px, 0);
+            }
+            75% {
+                clip: rect(5px, 9999px, 80px, 0);
+            }
+            100% {
+                clip: rect(25px, 9999px, 55px, 0);
+            }
+        }
+        .nav-link:hover {
+            text-shadow: 0px 0px 5px cyan, 0px 0px 10px cyan;
+        }
+        .scroll-highlight {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .scroll-highlight.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .container .stack {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+        .container .stack span {
+            font-weight: bold;
+            grid-row-start: 1;
+            grid-column-start: 1;
+            font-size: 4rem;
+            --stack-height: calc(100% / var(--stacks) - 1px);
+            --inverse-index: calc(calc(var(--stacks) - 1) - var(--index));
+            --clip-top: calc(var(--stack-height) * var(--index));
+            --clip-bottom: calc(var(--stack-height) * var(--inverse-index));
+            clip-path: inset(var(--clip-top) 0 var(--clip-bottom) 0);
+            animation: stack 340ms cubic-bezier(.46,.29,0,1.24) 1 backwards calc(var(--index) * 120ms), glitch 2s ease infinite 2s alternate-reverse;
+        }
+
+        .card{animation:blur-in 0.8s linear both} @keyframes blur-in{0%{filter:blur(12px);opacity:0}100%{filter:blur(0);opacity:1}}
+        @keyframes stack {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%);
+                text-shadow: -2px 3px 0 red, 2px -3px 0 blue;
+            }
+            60% {
+                opacity: 0.5;
+                transform: translateX(50%);
+            }
+            80% {
+                transform: none;
+                opacity: 1;
+                text-shadow: 2px -3px 0 red, -2px 3px 0 blue;
+            }
+            100% {
+                text-shadow: none;
+            }
+        }
+    </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <header class="sticky-top bg-black">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">Portfolio (WIP)</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mt-5">
+        <section id="intro" class="text-center mb-5 scroll-highlight">
+            <div class="container">
+                <div class="stack" style="--stacks: 3;">
+                    <span style="--index: 0;">Project Log</span>
+                    <span style="--index: 1;">Project Log</span>
+                    <span style="--index: 2;">Project Log</span>
+                </div>
+            </div>
+            <p class="lead mt-3">Explore my latest projects, feel free to reach out!</p>
+        </section>
+
+        <section id="highlight-projects">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="card bg-dark text-light h-100">
+                        <a href="https://github.com/timbelmon/project-pages/cybderdeck1.html"><img src="project-images\cyberdeck1.jpeg" class="card-img-top" alt="Project 1 Screenshot"></a>
+                        <div class="card-body">
+                            <h5 class="card-title">Cyberdeck MK1</h5>
+                            <p class="card-text">DIY Laptop based on Ryzen 7 5600G.</p>
+                            <!-- <a href="https://github.com/yourusername/project1" target="_blank" class="btn btn-primary">View on GitHub</a> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg-dark text-light h-100">
+                        <img src="project-images\placeholder1.png" class="card-img-top" alt="Project 2 Screenshot">
+                        <div class="card-body">
+                            <h5 class="card-title">Placeholder</h5>
+                            <p class="card-text">This page is WIP what did you expect?</p>
+                            <!-- <a href="https://github.com/yourusername/project2" target="_blank" class="btn btn-primary">View on GitHub</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black text-center text-light py-3 mt-5">
+        <p>Last update: 16.12.2024</p>
+        <ul class="list-inline">
+            <li class="list-inline-item"><a href="https://discord.gg/TEQmWd7" target="_blank" class="text-light">Discord</a></li>
+            <li class="list-inline-item"><a href="https://github.com/timbelmon" target="_blank" class="text-light">GitHub</a></li>
+        </ul>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-highlight').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>
