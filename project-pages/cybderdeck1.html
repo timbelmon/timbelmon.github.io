@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Details</title>
+    <title>DIY Cyberdeck Build</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico">
@@ -18,24 +18,32 @@
         main {
             flex: 1;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            text-align: center;
+            flex-direction: column;
+            align-items: center;
+            text-align: left;
             padding: 20px;
-        }
-        .header {
-            margin-bottom: 30px;
         }
         .header h1 {
             color: #fff;
             font-size: 2.5rem;
+            text-shadow: 0 0 10px #5d00ff;
         }
-        .description {
-            margin-bottom: 20px;
+        .section {
+            margin-bottom: 40px;
+            max-width: 80%;
+            max-width: 80%;
         }
-        .timeline {
-            text-align: left;
-            max-width: 600px;
+        .section h2 {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .timeline ul {
+            padding-left: 20px;
+        }
+        footer {
+            background: #000;
+            text-align: center;
+            padding: 10px;
         }
     </style>
 </head>
@@ -43,16 +51,16 @@
     <header class="sticky-top bg-black">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="index.html">Portfolio</a>
+                <a class="navbar-brand" href="/index.html">Portfolio</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="#navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
-                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/projects.html">Projects</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
                     </ul>
                 </div>
             </div>
@@ -60,26 +68,39 @@
     </header>
 
     <main>
-        <div>
-            <div class="header">
-                <h1>Project Title</h1>
-            </div>
-            <div class="description">
-                <p>This is the project description page. You can provide detailed information about the project here, including objectives, features, technologies used, and more.</p>
-            </div>
-            <div class="timeline">
-                <h3>Timeline</h3>
-                <ul>
-                    <li>Phase 1: Description of the initial phase</li>
-                    <li>Phase 2: Description of the development phase</li>
-                    <li>Phase 3: Finalization and delivery</li>
-                </ul>
-            </div>
+        <div class="header">
+            <h1>DIY Cyberdeck Build</h1>
         </div>
-    </main>
+        <div class="section">
 
-    <footer class="bg-black text-center text-light py-3">
-        <p>Last Update: 15.12.2024</p>
+            <h2>Introduction</h2>
+            <p>This project aims to build a custom DIY cyberdeck based on a DeskMini X300 barebones PC paired with an AMD Ryzen 7 5700G.</p>
+
+            <h2>Progress</h2>
+            <p>The project was heavily inspired by the r/cyberdeck subreddit, the novel <em>Necromancer</em>, and <em>Cyberpunk 2077</em>. I wanted to create a cyberdeck that emphasizes power and functionality over the typical Raspberry Pi-based designs, opting instead for a desktop-grade processor.</p>
+
+            <h2>Hardware</h2>
+            <ul>
+                <li>DeskMini X300 and Ryzen 7 5700G with a custom 3D-printed bracket for better cooling.</li>
+                <li>27,000mAh 100W power bank for portable power.</li>
+                <li>100W USB PD trigger and high-quality USB-C cables.</li>
+                <li>Logitech Pebble Mouse and a slim generic Bluetooth keyboard.</li>
+                <li>PETG filament and neodymium magnets for enclosure design.</li>
+            </ul>
+
+            <h2>Enclosure Design</h2>
+            <p>The enclosure is based on a Pelican-style waterproof box. Inside, a 3D-printed PETG structure houses the DeskMini motherboard and provides multifunctional storage for peripherals.</p>
+
+            <h2>Power Solution</h2>
+            <p>The cyberdeck is powered by a 27,000mAh 100W power bank, though battery life is limited. I'm exploring custom LiPo battery solutions to extend usage time.</p>
+
+            <h2>Work in Progress</h2>
+            <p><strong>Missing:</strong> A screen has not been chosen or mounted yet. Suggestions are welcome!</p>
+        </div>
+        </main>
+
+    <footer class="bg-black text-light">
+        <p>Last Update: 16.12.2024</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
