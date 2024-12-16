@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<!-- Made by timbelmon -->
+<!-- https://github.com/timbelmon -->
+<head>
+    <title>Gcode Repeater</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: "Calibri", sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            scale: 2;
+            transform: translate(5%, 12%);
+        }
+
+        h2 {
+            margin: 0 0 0 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            color: #007BFF;
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 80%;
+            margin: auto;
+        }
+
+        #status {
+            grid-column: span 2;
+            text-align: center;
+        }
+
+        .form-group,
+        .movementSpeed-group,
+        .coolingTemp-group,
+        .printer-group {
+            grid-column: span 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #mode,
+        .form-group{
+            grid-column: span 2;
+            width: 100%;
+        }
+
+        .form-group label,
+        .movementSpeed-group label,
+        .coolingTemp-group label {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        #interface {
+            text-align: left;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            row-gap: 10px;
+            column-gap: 30px;
+        }
+
+        input[type="file"] {
+            grid-column: span 1;
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        button {
+            margin-top: 10px;
+            margin-right: 5px;
+            padding: 10px 20px;
+            background-color: #9b067c;
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            grid-column: span 2;
+            justify-self: center;
+        }
+
+        input[type="number"] {
+            grid-column: span 1;
+            font-size: 16px;
+            padding: 10px 0px 10px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        input[type="number"].disabled {
+            background-color: #e0e0e0;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            grid-column: span 1;
+            background-color: #fff;
+            padding: 10px 0 10px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.5);
+        }
+
+        .checkbox-group label {
+            font-size: 16px;
+            margin: 0;
+            color: #333;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+        }
+
+        table {
+            width: 100%;
+            grid-column: span 2;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: bold;
+            width: 2%;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            color: #555;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            grid-column: span 2;
+        }
+
+        select {
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+
+
+        #input-files{
+            grid-column: span 2;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-top: -20px;
+            margin-left: -20px;
+            z-index: 100;
+        }
+
+        .double-bounce1, .double-bounce2 {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #333;
+            opacity: 0.6;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: bounce 2.0s infinite ease-in-out;
+        }
+
+        .double-bounce2 {
+            animation-delay: -1.0s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(0.0);
+            }
+            50% {
+                transform: scale(1.0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-double-down logo" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+  <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+</svg>
+            <h2>Gcode-Repeater</h2>
+        </div>
+        <meta author="timbelmon">
+    </header>
+    <div class="content">
+        <h3>Upload one or more Gcode-Files and configure Parameters.<br>The custom Gcode will be downloaded automatically.</h3>
+
+        <div id="interface">
+            <input type="file" id="input-files" accept=".gcode" multiple>
+            <div class="form-group">
+                <label for="mode">Mode:</label>
+                <select id="mode">
+                    <!-- <option value="1">FDM-Anlage (WIP)</option> -->
+                    <option value="2">Automatic</option>
+                    <!-- <option value="3">Pneumatik-Drucker (WIP)</option> -->
+                    <option value="4">Manual</option>
+                </select>
+            </div>
+            <div class="printer-group">
+                <label for="printer">Printer:</label>
+                <select id="printer-model">
+                    <option value="MK4">Prusa MK4</option>
+                    <option value="MK3s">Prusa MK3s</option>
+                </select>
+            </div>
+            <div class="movementSpeed-group">
+                <label for="movementSpeed">Push-Speed:</label>
+                <input type="number" id="movementSpeed" placeholder="Push-Speed" min="0" max="10000" value="1200">
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="checkboxHeatbed">
+                <label for="checkboxHeatbed">Cool Heatbed.</label>
+            </div>
+            <div class="coolingTemp-group">
+                <label for="heatbed">Cooling Temp:</label>
+                <input disabled type="number" id="heatbed" name="heatbed" placeholder="Heizbett Temperatur" min="20"
+                    value="30" class="disabled">
+            </div>
+            <div class="customCode-group">
+                <textarea id="customCode" rows="20" cols="100" style="width: 100%;">
+; Beispiel Gcode
+; Der Gcode wird zwischen den Druckprozessen eingefuegt.
+
+G1 Z100 ; move printhead up 
+M190 R33 ; set bed temp and wait
+G1 X130 Y200 F1200; move printhead back
+G1 Z1 F600; move printhead down
+G1 X130 Y0 F1200; push model with printhead
+M190 R70 ; set bed temp and wait</textarea>
+            </div>
+        </div>
+
+        <div id="print-configs"></div>
+        <table id="infotable" style='display: none'>
+            <tbody>
+                <tr>
+                    <td>
+                        <p id="weightCombined"></p>
+                    </td>
+                    <td>
+                        <p id="timeCombined"></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button id="combine-btn">Generate</button><button id="uncombine-btn" style="display: none">Seperate Gcode</button><br><br>
+        <p id="status"></p>
+        
+    </div>
+    <div id="loading-spinner" class="spinner" style="display: none;">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+
+    <script>
+        const combineBtn = document.getElementById('combine-btn');
+const inputFiles = document.getElementById('input-files');
+const printConfigs = document.getElementById('print-configs');
+const status = document.getElementById('status');
+const checkboxHeatbed = document.getElementById('checkboxHeatbed');
+const heatbed = document.getElementById('heatbed');
+const modeSelect = document.getElementById('mode');
+const movementSpeed = document.getElementById('movementSpeed');
+
+let fileData = []; // Array zum Speichern der Daten für jede Datei
+
+const modeConfig = {
+    1: {
+        "disable": ["cooling", "speed", "custom", "printer"]
+    },
+    2: {
+        "disable": ["custom"]
+    },
+    3: {
+        "disable": ["speed", "custom", "printer"]
+    },
+    4: {
+        "disable": ["cooling", "speed", "printer"]
+    }
+    // Add more modes as needed
+};
+
+const printerConfig = {
+    "MK4": {
+        "XYZ-Offsets": [0, 75, 3]
+    },
+    "MK3s": {
+        "XYZ-Offsets": [-16.5, 75, 3]
+    }
+    // Add more modes as needed
+};
+
+function getSelectedPrinterOffsets() {
+    const selectedPrinterModel = document.getElementById("printer-model").value;
+    return printerConfig[selectedPrinterModel]["XYZ-Offsets"];
+}
+
+function updateUIBasedOnMode(selectedMode) {
+    const button = document.getElementById("checkboxHeatbed");
+    const numberInput = document.getElementById("movementSpeed");
+    const checkbox_group = document.getElementsByClassName("checkbox-group");
+    const movementSpeed_group = document.getElementsByClassName("movementSpeed-group");
+    const coolingTemp_group = document.getElementsByClassName("coolingTemp-group");
+    const customCode_group = document.getElementsByClassName("customCode-group");
+    const customCode = document.getElementById('customCode');
+    const printer_group = document.getElementsByClassName("printer-group");
+
+
+
+
+    // First, enable all elements
+    button.disabled = false;
+    numberInput.disabled = false;
+    movementSpeed_group[0].style.display = 'flex';
+    coolingTemp_group[0].style.display = 'flex';
+    checkbox_group[0].style.display = 'flex';
+    customCode_group[0].style.display = 'flex';
+    printer_group[0].style.display = 'flex';            
+
+
+    // Get the config for the selected mode
+    const config = modeConfig[selectedMode];
+
+    if (config) {
+        // Disable the specified elements
+        if (config.disable.includes("cooling")) {
+            button.disabled = true;
+            coolingTemp_group[0].style.display = 'none';
+            checkbox_group[0].style.display = 'none';
+        }
+        if (config.disable.includes("speed")) {
+            numberInput.disabled = true;
+            movementSpeed_group[0].style.display = 'none';            
+        }
+        if (config.disable.includes("custom")) {
+            customCode_group[0].style.display = 'none';            
+        }
+        if (config.disable.includes("printer")) {
+            printer_group[0].style.display = 'none';            
+        }
+    }
+}
+
+updateUIBasedOnMode(2);
+
+
+document.getElementById("mode").addEventListener("change", function() {
+    const selectedMode = this.value;
+    updateUIBasedOnMode(selectedMode);
+});
+
+checkboxHeatbed.addEventListener('change', function () {
+    heatbed.disabled = !this.checked;
+    heatbed.classList.toggle('disabled', !this.checked);
+});
+
+
+inputFiles.addEventListener('change', () => {
+    document.getElementById("loading-spinner").style.display = 'block';
+    printConfigs.innerHTML = '';
+    fileData = []; // Reset the file data array
+
+    const table = document.createElement('table');
+    table.border = "1";
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = `
+        <th>File</th>
+        <th>Amount</th>
+        <th>Weight</th>
+        <th>Time</th>
+    `;
+    table.appendChild(headerRow);
+
+    const files = Array.from(inputFiles.files);
+    const promises = [];
+
+    if (files.length === 1) {
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onload = function () {
+            const gcode = reader.result;
+            if (gcode.startsWith('; PRUSAPRINTMILL | START OF ')) {
+                document.getElementById('uncombine-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('uncombine-btn').style.display = 'none';
+            }
+        };
+        reader.readAsText(file);
+    } else {
+        document.getElementById('uncombine-btn').style.display = 'none';
+    }
+
+    files.forEach((file, index) => {
+        const row = document.createElement('tr');
+        const fileName = file.name.replace(/[^a-z0-9]/gi, '_'); // Replace non-alphanumeric characters for safe IDs
+        row.innerHTML = `
+            <td>
+               <button class="remove-btn" style='padding: 10px; margin-right: 5px;' data-file-name="${fileName}"><svg xmlns="http://www.w3.org/2000/svg" style='scale: 1.5; margin-top: 5px;' width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                    </svg></button></label> <label for="print-count-${fileName}">${file.name} 
+            </td>
+            <td><input type="number" class="print-count" id="print-count-${fileName}" placeholder="Anzahl an Druckvorgängen?" min="1" max="100000" value="1" data-file-name="${fileName}"></td>
+            <td class="weight" id="weight-${fileName}">Single: 0g<br>All: 0g</td>
+            <td class="time" id="time-${fileName}">Single: 0<br>All: 0</td>
+        `;
+        table.appendChild(row);
+
+        const promise = new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = function () {
+                let gcode = this.result;
+                let weight = 0;
+                let time = 0;
+                const lines = gcode.split(/\r?\n/);
+
+                for (let line of lines) {
+                    if (line.includes("; total filament used [g] =")) {
+                        weight = parseFloat(line.split("=")[1]);
+                    } else if (line.includes("; estimated printing time")) {
+                        time = parseTimeToSeconds(line.split("=")[1]);
+                    }
+                }
+
+                fileData.push({ name: fileName, weight, time });
+                resolve();
+            };
+            reader.readAsText(file);
+        });
+
+        promises.push(promise);
+    });
+
+    Promise.all(promises).then(() => {
+        printConfigs.appendChild(table);
+        addQuantityChangeListeners();
+        updateValues();
+        document.getElementById("loading-spinner").style.display = 'none';
+    });
+});
+
+printConfigs.addEventListener('click', function(event) {
+    if (event.target.closest('.remove-btn')) {
+        const button = event.target.closest('.remove-btn');
+        const fileName = button.getAttribute('data-file-name');
+        fileData = fileData.filter(data => data.name !== fileName);
+        button.closest('tr').remove();
+        updateIndices();
+        addQuantityChangeListeners();
+        updateValues();
+    }
+});
+
+document.getElementById('uncombine-btn').addEventListener('click', () => {
+    const files = inputFiles.files;
+    if (files.length === 0) {
+        status.innerHTML = "Bitte mindestens eine Gcode-Datei hochladen.";
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function () {
+        const combinedGcode = reader.result+".gcode";
+        const uncombinedFiles = uncombineGcode(combinedGcode);
+
+        uncombinedFiles.forEach(file => {
+            const blob = new Blob([file.content], { type: 'text/plain' });
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = file.name.endsWith('.gcode') ? file.name : `${file.name}.gcode`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        });
+    };
+
+    // Read the first combined file for uncombining
+    reader.readAsText(files[0]);
+});
+
+
+function addQuantityChangeListeners() {
+    const quantityInputs = document.querySelectorAll('.print-count');
+    quantityInputs.forEach(input => {
+        input.addEventListener('input', function () {
+            const fileName = this.getAttribute('data-file-name');
+            updateValues(fileName);
+        });
+    });
+}
+
+function uncombineGcode(combinedGcode) {
+    const fileSegments = combinedGcode.split(/; PRUSAPRINTMILL \| START OF ([^\n]+)\n/).slice(1);
+    const files = [];
+    console.log("uncombine")
+
+    for (let i = 0; i < fileSegments.length; i += 2) {
+        const fileName = fileSegments[i].trim();
+        const endMarker = `; PRUSAPRINTMILL | END OF ${fileName}`;
+        const fileContentWithLoops = fileSegments[i + 1].split(endMarker)[0].trim();
+        
+        // Split by lines
+        const lines = fileContentWithLoops.split('\n');
+        let firstLoopContent = '';
+        let inLoop = false;
+
+        for (let line of lines) {
+            if (line.includes(`; PRUSAPRINTMILL | FILE:${fileName}, COUNT:2`) || (inLoop==false && line.includes(`; PRUSAPRINTMILL | CUSTOM COMMANDS START`))) {
+                inLoop = true;
+            } else if (line.includes('; Filament-specific end gcode') || (inLoop==false && line.includes(`; PRUSAPRINTMILL | CUSTOM COMMANDS END`))) {
+                inLoop = false;
+            }
+
+            if (!inLoop) {
+                firstLoopContent += line + '\n';
+            }
+        }
+
+        files.push({ name: fileName, content: firstLoopContent.trim() });
+    }
+
+    console.log(files)
+    return files;
+}
+
+
+function updateIndices() {
+    const rows = printConfigs.querySelectorAll('tr');
+    rows.forEach((row, index) => {
+        if (index === 0) return; // Skip header row
+        const button = row.querySelector('.remove-btn');
+        if (button) {
+            const fileName = button.getAttribute('data-file-name');
+            button.setAttribute('data-file-name', fileName);
+        }
+        const input = row.querySelector('.print-count');
+        if (input) {
+            const fileName = input.getAttribute('data-file-name');
+            input.setAttribute('data-file-name', fileName);
+        }
+    });
+}
+
+function updateValues(changedFileName) {
+    let totalWeight = 0;
+    let totalTime = 0;
+
+    fileData.forEach((data) => {
+        const printCountElement = document.getElementById(`print-count-${data.name}`);
+        if (printCountElement) {
+            const printCount = parseInt(printCountElement.value, 10) || 1; // Ensure it's a number
+            const totalFileWeight = data.weight * printCount;
+            const totalFileTime = data.time * printCount;
+
+            const weightElement = document.getElementById(`weight-${data.name}`);
+            const timeElement = document.getElementById(`time-${data.name}`);
+
+            if (weightElement && timeElement) {
+                weightElement.innerHTML = `Single: ${data.weight.toFixed(2)}g<br>All: ${totalFileWeight.toFixed(2)}g`;
+                timeElement.innerHTML = `Single: ${convertSecondsToTime(data.time)}<br>All: ${convertSecondsToTime(totalFileTime)}`;
+            }
+
+            totalWeight += totalFileWeight;
+            totalTime += totalFileTime;
+        }
+    });
+
+    if (fileData.length > 1) {
+        document.getElementById('weightCombined').innerHTML = "Weight All: " + totalWeight.toFixed(2) + "g";
+        document.getElementById('timeCombined').innerHTML = "Time All: " + convertSecondsToTime(totalTime);
+        document.getElementById('infotable').style.display = 'block';
+    } else {
+        document.getElementById('infotable').style.display = 'none';
+    }
+}
+
+function parseTimeToSeconds(timeString) {
+    const timeComponents = timeString.split(' ');
+    let totalSeconds = 0;
+
+    for (const timeComponent of timeComponents) {
+        const number = parseInt(timeComponent.slice(0, -1));
+        const unit = timeComponent.slice(-1);
+
+        if (unit === 'h') {
+            totalSeconds += number * 60 * 60;
+        } else if (unit === 'm') {
+            totalSeconds += number * 60;
+        } else if (unit === 's') {
+            totalSeconds += number;
+        }
+    }
+    return totalSeconds;
+}
+
+function convertSecondsToTime(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    totalSeconds %= 3600;
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+}
+
+combineBtn.addEventListener('click', () => {
+    document.getElementById("loading-spinner").style.display = 'block';
+    status.innerHTML = "Arbeitet...";
+    const files = inputFiles.files;
+
+    if (fileData.length === 0) {
+        status.innerHTML = "Upload atleast one Gcode file.";
+        document.getElementById("loading-spinner").style.display = 'none';
+        return;
+    }
+
+    const blobParts = [];
+    const promises = [];
+
+    for (let i = 0; i < fileData.length; i++) {
+        const fileDataItem = fileData[i];
+        const printCountElement = document.getElementById(`print-count-${fileDataItem.name}`);
+
+        if (!printCountElement) {
+            continue; 
+        }
+
+        const printCount = printCountElement.value;
+        const file = files[i];
+
+        const promise = new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = function () {
+                let gcode = this.result;
+                let oldBedTemp = "";
+                let L_start = "";
+                let L_print = "";
+                let L_end = "";
+                let flag = 0;
+                const lines = gcode.split(/\r?\n/);
+
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+                    if (flag == 0 && line.includes("M190")) {
+                        oldBedTemp = line;
+                    } else if ((flag == 0 || flag == 4) && (line.includes("; printing object"))) {
+                        flag = 1;
+                    } else if (flag == 1 && (line.includes("; Filament-specific end gcode") || line.includes(";TIME_ELAPSED:"))) {
+                        flag = 2;
+                    } else if (line.includes(";TYPE:Skirt/Brim")) {
+                        flag = 4;
+                    }
+
+                    if (flag === 0) {
+                        L_start += line + '\n';
+                    } else if (flag === 1) {
+                        L_print += line + '\n';
+                    } else if (flag === 2) {
+                        L_end += line + '\n';
+                    }
+                }
+
+                if (flag == 2) {
+                    let { medianX, maxZ, maxY } = getMedianXAndMaxZY(L_print);
+                    const [offsetX, offsetY, offsetZ] = getSelectedPrinterOffsets();
+                    
+                    maxZ = parseInt(maxZ) + offsetZ;
+                    maxY = parseInt(maxY) + offsetY;
+                    medianX = parseInt(medianX) + offsetX;
+
+                    console.log(medianX);
+
+                    let loopCommands;
+                    let startCommands;
+                    let commands;
+/* legacy
+                    if (modeSelect.value === '1') {
+                        startCommands = [
+                        "M42 P76 S0\n",
+                        "M42 P73 S0\n",
+                        "M42 P73 S255\n",
+                        "M226 P20 S1; Startsignal P20\n",
+                        "M400\n",
+                        ];
+                        loopCommands += startCommands
+                    }
+
+                    
+*/
+                    
+                    blobParts.push(`; PRUSAPRINTMILL | START OF ${fileDataItem.name}\n`);
+                    blobParts.push(L_start);
+
+
+                    // COMMANDS BEFORE PRINT
+                    for (let j = 0; j < printCount; j++) {
+                        if (modeSelect.value === '1') {
+                            commands = [
+                                "G1 X0 Y211 Z150; home X axis and push Y forward\n",
+                                "M400\n",
+                                "M42 P76 S255\n",
+                                "G4 S4\n",
+                                "M42 P76 S0\n",
+                                
+                                "M42 P76 S0\n",
+                                "M42 P73 S0\n",
+                                "M42 P73 S255\n",
+                                "M226 P20 S1; Startsignal P20\n",
+                                "M400\n"
+                            ];
+                        } else if (modeSelect.value === '2') {
+                            commands = [
+                                `G1 Z${maxZ} ; move printhead up (Mode 2)\n`,
+                                checkboxHeatbed.checked ? `M190 R${heatbed.value} ; set bed temp and wait (Mode 2)\n` : '',
+                                `G1 X${medianX} Y${maxY} F${movementSpeed.value}; move printhead back (Mode 2)\n`,
+                                `G1 Z1 F600; move printhead down (Mode 2)\n`,
+                                `G1 X${medianX} Y0 F${movementSpeed.value}; push model with printhead (Mode 2)\n`,
+                                checkboxHeatbed.checked ? `${oldBedTemp} (Mode 2)\n` : ''
+                            ];
+                        } else if (modeSelect.value === '3') {
+                            commands = [
+                                checkboxHeatbed.checked ? `M190 R${heatbed.value} ; set bed temp and wait (Mode 3)\n` : '',
+                                `G1 X12 Y170 Z190 F1200;\n`,
+                                `G1 X12 Y170 Z208 F1200;\n`,
+                                'G4 S8;\n',
+                                `G1 X12 Y170 Z190 F1200;\n`,
+                                checkboxHeatbed.checked ? `${oldBedTemp}\n` : ''
+                            ];
+                        } else if (modeSelect.value === '4') {
+                            commands = customCode.value.split('\n');
+                        }
+
+                        blobParts.push(`; PRUSAPRINTMILL | FILE:${fileDataItem.name}, COUNT:${j+1}\n`);
+                        blobParts.push(L_print);
+
+                        commands.forEach(command => {
+                            if (command) {
+                                if (modeSelect.value === '4'){
+                                    command += '\n';
+                                }
+                                blobParts.push(`; PRUSAPRINTMILL | CUSTOM COMMANDS START\n`);
+                                blobParts.push(command);
+                                blobParts.push(`; PRUSAPRINTMILL | CUSTOM COMMANDS END\n`);
+                            }
+                        });
+                    }
+
+                    blobParts.push(L_end);
+                    blobParts.push(`; PRUSAPRINTMILL | END OF ${fileDataItem.name}\n`);
+                }
+
+                resolve();
+            };
+            reader.readAsText(file);
+        });
+
+        promises.push(promise);
+        document.getElementById("loading-spinner").style.display = 'none';
+    }
+
+    Promise.all(promises).then(() => {
+        let fileName;
+        if (fileData.length === 1) {
+            const printCount = document.querySelector('.print-count').value;
+            const originalFileName = files[0].name;
+            fileName = `${printCount}x_${originalFileName}`;
+        } else {
+            const combinedNames = fileData.map((file) => {
+                const printCount = document.getElementById(`print-count-${file.name}`).value;
+                return `${printCount}x_${file.name}`;
+            }).join('_');
+            fileName = combinedNames + ".gcode";
+        }
+
+
+        const myBlob = new Blob(blobParts, { type: 'text/plain' });
+
+        status.innerHTML = "Download started...";
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(myBlob);
+        downloadLink.download = fileName;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    });
+});
+
+function getMedianXAndMaxZY(gcode) {
+    const g1Commands = gcode.match(/G1 [^;]*/g) || [];
+    let xValues = [];
+    let yValues = [];
+    let zValues = [];
+
+    g1Commands.forEach((command) => {
+        const matchX = command.match(/X\s*([\d\.e+-]*)/i);
+        const matchY = command.match(/Y\s*([\d\.e+-]*)/i);
+        const matchZ = command.match(/Z\s*([\d\.e+-]*)/i);
+
+        if (matchX && !isNaN(parseFloat(matchX[1]))) {
+            xValues.push(parseFloat(matchX[1]));
+        }
+
+        if (matchY && !isNaN(parseFloat(matchY[1]))) {
+            yValues.push(parseFloat(matchY[1]));
+        }
+
+        if (matchZ && !isNaN(parseFloat(matchZ[1]))) {
+            zValues.push(parseFloat(matchZ[1]));
+        }
+    });
+
+    xValues.sort((a, b) => a - b);
+    yValues.sort((a, b) => a - b);
+    zValues.sort((a, b) => a - b);
+
+    const medianX = xValues[Math.floor(xValues.length / 2)];
+    const maxZ = zValues[zValues.length - 1];
+    const maxY = yValues[yValues.length - 1];
+
+    return { medianX, maxZ, maxY };
+}
+
+    </script>
+</body>
+
+</html>
