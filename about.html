@@ -21,6 +21,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            flex-direction: column;
         }
         .about-container {
             max-width: 800px;
@@ -33,6 +34,14 @@
         p {
             margin-bottom: 15px;
             line-height: 1.6;
+        }
+        .profile-image {
+            display: block; 
+            margin: 40px; 
+            border-radius: 50%;
+            width: 200px; 
+            height: 200px; 
+            object-fit: cover; 
         }
     </style>
 </head>
@@ -60,6 +69,7 @@
     </header>
 
     <main>
+        <img src="/images/classic logo.png" alt="Responsive image" class="profile-image">
         <div class="about-container">
             <h1>About Me</h1>
             <p>I'm just a huge nerd with an obsession for tech. This is a place for me to share my projects and skillsets with anyone who's interested. This entire webpage is also a work in progress, so beware!</p>
