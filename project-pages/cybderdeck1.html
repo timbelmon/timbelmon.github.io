@@ -30,8 +30,7 @@
         }
         .section {
             margin-bottom: 40px;
-            max-width: 80%;
-            max-width: 80%;
+            max-width: 70%;
         }
         .section h2 {
             color: #fff;
@@ -45,10 +44,18 @@
             text-align: center;
             padding: 10px;
         }
-        img{
+        img {
             border-radius: 20px;
             margin-bottom: 20px;
+            max-width: 600px; 
         }
+         
+        @media (max-width: 1000px) {
+            .section {
+                max-width: 100%;
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -94,7 +101,7 @@
                 <li>Logitech Pebble Mouse and a slim generic Bluetooth keyboard.</li>
                 <li>PETG filament and neodymium magnets for enclosure design.</li>
             </ul>
-            <img src="/project-images/cyberdeck1/cyberdeck build process.jpg" class="img-fluid" alt="Responsive image">
+            <img src="C:\Users\Timo\Documents\GitHub\timbelmon.github.io\project-images\cyberdeck1\cyberdeck build process.jpg" class="img-fluid" alt="Responsive image">
 
             <h2>Enclosure Design</h2>
             <p>The enclosure is based on a Pelican-style waterproof box. Inside, a 3D-printed PETG structure houses the DeskMini motherboard and provides multifunctional storage for peripherals.</p>
@@ -112,7 +119,7 @@
         </main>
 
     <footer class="bg-black text-light">
-        <p>Last Update: 16.12.2024</p>
+        <p>Last Update: 17.12.2024</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
